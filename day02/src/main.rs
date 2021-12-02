@@ -1,57 +1,49 @@
-use std::collections::{HashMap, HashSet};
-
 fn main() {
-    let mut input: Vec<String> = include_str!("input.txt")
+    let input: Vec<&str> = include_str!("input.txt")
         .lines()
-        .map(|s| String::from(s))
         .collect();
 
-    let mut h : i32= 0;
+    let mut hori: i32 = 0;
     let mut vert: i32 = 0;
     for s in &input {
         let (dir, v)= s.split_once(' ').unwrap();
+        let v = v.parse::<i32>().unwrap();
 
         match dir {
             "forward" => {
-                h += v.parse::<i32>().unwrap();
+                hori += v;
             }
             "up" => {
-                vert -= v.parse::<i32>().unwrap();
-
+                vert -= v;
             }
             "down" => {
-                vert += v.parse::<i32>().unwrap();
-
+                vert += v;
             }
             _ => panic!(),
         }
-
-
     }
-
-
-    dbg!(vert*h);
-    let mut h : i32= 0;
+    dbg!(vert*hori);
+    
+    let mut hori: i32 = 0;
     let mut vert: i32 = 0;
     let mut aim: i32 = 0;
     for s in &input {
         let (dir, v)= s.split_once(' ').unwrap();
+        let v = v.parse::<i32>().unwrap();
 
         match dir {
             "forward" => {
-                h += v.parse::<i32>().unwrap();
-                vert += (aim*v.parse::<i32>().unwrap())
+                hori += v;
+                vert += aim*v;
             }
             "up" => {
-                aim -= v.parse::<i32>().unwrap();
-
+                aim -= v;
             }
             "down" => {
-                aim += v.parse::<i32>().unwrap();
-
+                aim += v;
             }
             _ => panic!(),
         }
     }
-    dbg!(vert*h);
+    dbg!(vert*hori);
 }
