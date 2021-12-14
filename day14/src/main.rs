@@ -24,10 +24,10 @@ fn p1(start: Vec<char>, lc: HashMap<(char, char), char>) {
 fn p2(start: Vec<char>, lc: HashMap<(char, char), char>) {
     let mut cache: HashMap<(char, char, usize), HashMap<char, u128>> = HashMap::new();
     let mut counter: HashMap<char, u128> = HashMap::new();
-    for c in &start {
-        *counter.entry(*c).or_insert(0) += 1
-    }
-    fn dfs(
+    // for c in &start {
+    //     *counter.entry(*c).or_insert(0) += 1
+    // }
+    fn dp(
         c1: char,
         c2: char,
         gen: usize,
@@ -41,12 +41,13 @@ fn p2(start: Vec<char>, lc: HashMap<(char, char), char>) {
                     let mut counts: HashMap<char,u128> = HashMap::new();
                     *counts.entry(c1).or_insert(0) += 1;
                     *counts.entry(c2).or_insert(0) += 1;
+                    memo.insert((c1,c2,gen), counts.clone());
                     counts
                 } else {
                     let mut counts: HashMap<char,u128> = HashMap::new();
                     let c3 = lc.get(&(c1,c2)).unwrap();
-                    let cA = dfs(c1, *c3, gen-1, lc, memo);
-                    let cB = dfs(*c3, c2, gen-1, lc, memo);
+                    let cA = dp(c1, *c3, gen-1, lc, memo);
+                    let cB = dp(*c3, c2, gen-1, lc, memo);
                     for (k, v) in cA.into_iter() {
                         *counts.entry(k).or_insert(0) += v;
                     }
@@ -54,6 +55,7 @@ fn p2(start: Vec<char>, lc: HashMap<(char, char), char>) {
                         *counts.entry(k).or_insert(0) += v;
                     }
                     *counts.entry(*c3).or_insert(0) -= 1;
+                    memo.insert((c1,c2,gen), counts.clone());
                     counts
                 }
             }
@@ -61,7 +63,7 @@ fn p2(start: Vec<char>, lc: HashMap<(char, char), char>) {
 
     }
     for w in start.windows(2) {
-        let counts = dfs(w[0], w[1], 40, &lc, &mut cache);
+        let counts = dp(w[0], w[1], 40, &lc, &mut cache);
         for (k, v) in counts.into_iter() {
             *counter.entry(k).or_insert(0) += v;
         }
